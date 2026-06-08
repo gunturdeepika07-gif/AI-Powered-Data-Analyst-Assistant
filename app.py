@@ -47,6 +47,16 @@ if uploaded_file:
         include = ['int64', 'float64']
     ).columns
 
+    # selected_column = st.selectbox(
+    #     "Select Numeric Column",
+    #     numeric_columns
+    # )
+
+    st.subheader("Column Explorer")
+    numeric_columns = df.select_dtypes(include="number").columns
+    st.write("Numeric Columns Found: ")
+    st.write(list(numeric_columns))
+
     selected_column = st.selectbox(
         "Select Numeric Column",
         numeric_columns
