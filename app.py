@@ -17,6 +17,9 @@ from src.visualizer import create_boxplot
 from src.visualizer import create_heatmap
 from src.insights import generate_insights
 from src.narrator import generate_summary
+from src.query_engine import answer_question
+
+
 # Import CSV loader
 from src.data_loader import load_data
 
@@ -123,3 +126,13 @@ if uploaded_file:
     st.pyplot(heatmap_fig)
 
 
+    st.subheader("Ask Questions About Your Dataset")
+
+    question = st.text_input(
+        'Ask a question'
+    )
+
+    if question:
+        response = answer_question(df, question)
+
+        st.success(response)
