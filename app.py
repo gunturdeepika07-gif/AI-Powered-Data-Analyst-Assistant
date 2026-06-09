@@ -1,59 +1,83 @@
 import streamlit as st
+# Cursor
+st.markdown("""
+            <style>
+            div[data-baseweb="select] > div {
+            cursor: pointer;
+            }
+            div[role="listbox"] ul li{
+            cursor: pointer;
+            }
+            </style>
+            """, unsafe_allow_html=True)
 
+# Import visualization functions
 from src.visualizer import create_histogram
 from src.visualizer import create_boxplot
 from src.visualizer import create_heatmap
+from src.insights import generate_insights
 
-
+# Import CSV loader
 from src.data_loader import load_data
+
+# Import dataset prifiling functions
 from src.profiler import (
     get_shape,
     get_dtypes,
-    get_misssing_values
-    
+    get_misssing_values   
 )
 
+# Application title
 st.title("AI Powered Data Analyst Assistant")
 
+#Upload CSV file
 uploaded_file = st.file_uploader(
     "Upload CSV File",
     type = ["csv"]
 )
 
+
+#Run analysis only after a file is uploaded
 if uploaded_file:
 
+    #Load CSV into DataFrame
     df = load_data(uploaded_file)
 
     st.subheader("Dataset Preview")
     st.dataframe(df)
 
+    #Displays dataset dimensions
     rows, cols = get_shape(df)
 
     st.subheader("Dataset Shape")
     st.write(f"Rows: {rows}")
     st.write(f"Columns: {cols}")
 
+    # Show descriptive statistics
     st.subheader("Dataset Statistics")
     st.write(df.describe())
 
-
+    # Show column Data types
     st.subheader("Data Types")
     st.write(get_dtypes(df))
 
+    # Show missing values count
     st.subheader("Missing values")
     st.write(get_misssing_values(df))
 
+
+    # Find all numeric columns automatically
     numeric_columns = df.select_dtypes(
         include = ['int64', 'float64']
     ).columns
 
-    # selected_column = st.selectbox(
-    #     "Select Numeric Column",
-    #     numeric_columns
-    # )
-
+   
+    # Column Explorer section
     st.subheader("Column Explorer")
+
     numeric_columns = df.select_dtypes(include="number").columns
+
+    # Display available numeric columns
     st.write("Numeric Columns Found: ")
     st.write(list(numeric_columns))
 
@@ -62,8 +86,15 @@ if uploaded_file:
         numeric_columns
     )
 
+    st.subheader("AI Insights")
+
+    insights = generate_insights(df, selected_column)
+
+    for insight in insights:
+        st.write(insight)
 
 
+    # Histogram visualization
     st.subheader("Histogram")
     fig = create_histogram(
         df,
@@ -71,6 +102,8 @@ if uploaded_file:
     )
     st.pyplot(fig)
 
+
+    # Boxplot visualization
     st.subheader("Boxplot")
     box_fig = create_boxplot(
         df,
@@ -78,6 +111,7 @@ if uploaded_file:
     )
     st.pyplot(box_fig)
 
+    # Correlation analysis
     st.subheader("Correlation Heatmap")
     heatmap_fig = create_heatmap(df)
     st.pyplot(heatmap_fig)
