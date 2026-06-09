@@ -16,7 +16,7 @@ from src.visualizer import create_histogram
 from src.visualizer import create_boxplot
 from src.visualizer import create_heatmap
 from src.insights import generate_insights
-
+from src.narrator import generate_summary
 # Import CSV loader
 from src.data_loader import load_data
 
@@ -92,6 +92,12 @@ if uploaded_file:
 
     for insight in insights:
         st.write(insight)
+
+        st.subheader("AI Generated Summary")
+
+        summary = generate_summary(df, selected_column)
+
+        st.write(summary)
 
 
     # Histogram visualization
