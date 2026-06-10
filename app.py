@@ -19,6 +19,7 @@ from src.insights import generate_insights
 from src.narrator import generate_summary
 from src.query_engine import answer_question
 from src.ai_assistant import ask_gemini
+from src.report_generator import generate_report
 
 
 # Import CSV loader
@@ -152,3 +153,17 @@ if uploaded_file:
                 df, ai_question
             )
         st.success(response)
+
+        report = generate_report(
+            selected_column,
+            insights,
+            summary,
+            response
+        )
+
+        st.download_button(
+            label="Download Analysis Report",
+            data=report,
+            file_name="analysis_report.txt",
+            mime="text/plain"
+        )
