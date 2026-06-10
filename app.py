@@ -18,6 +18,7 @@ from src.visualizer import create_heatmap
 from src.insights import generate_insights
 from src.narrator import generate_summary
 from src.query_engine import answer_question
+from src.ai_assistant import ask_gemini
 
 
 # Import CSV loader
@@ -135,4 +136,19 @@ if uploaded_file:
     if question:
         response = answer_question(df, question)
 
+        st.success(response)
+
+    # AI Chat
+
+    st.subheader("AI Data Analyst Chat")
+
+    ai_question = st.text_area(
+        "Ask anything about your dataset"
+    )
+
+    if st.button("Generate AI Response"):
+        with st.spinner("Anlayzing dataset..."):
+            response = ask_gemini(
+                df, ai_question
+            )
         st.success(response)
