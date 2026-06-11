@@ -68,7 +68,32 @@ if uploaded_file:
 
     # Show missing values count
     st.subheader("Missing values")
-    st.write(get_misssing_values(df))
+    missing_values = get_misssing_values(df)
+    st.write(missing_values)
+
+    total_missing = missing_values.sum()
+    st.write(f"Total Missing Values: {total_missing}")
+
+
+
+    # Data Cleaning by removing missing values
+    st.header("Data Cleaning")
+
+    if st.button("Remove Missing Values"):
+        df = df.dropna()
+
+        st.success("Missing values removed successfully!")
+        st.write(df.head())
+
+        rows, cols = df.shape
+
+        st.write(f"Updated Shape: {rows} rows x {cols} columns")
+
+    if st.button("Remove Duplicates"):
+        df = df.drop_duplicates()
+
+        st.success("Duplicate rows removed!")
+        st.write(df.head())
 
 
     # Find all numeric columns automatically
