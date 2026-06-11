@@ -143,6 +143,6 @@ streamlit run app.py
 
 ## Author
 
-**Deepika Guntur**
+**Deepika**
 
 B.Tech Student | Aspiring Data Analyst
