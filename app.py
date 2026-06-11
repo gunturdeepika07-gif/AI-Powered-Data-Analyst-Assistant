@@ -20,6 +20,7 @@ from src.narrator import generate_summary
 from src.query_engine import answer_question
 from src.ai_assistant import ask_gemini
 from src.report_generator import generate_report
+from src.recommendations import generate_recommendations
 
 
 # Import CSV loader
@@ -192,3 +193,9 @@ if uploaded_file:
             file_name="analysis_report.txt",
             mime="text/plain"
         )
+        st.subheader("AI Recommendations")
+
+        recommendations = generate_recommendations(df)
+
+        for recommendation in recommendations:
+            st.info(recommendation)
