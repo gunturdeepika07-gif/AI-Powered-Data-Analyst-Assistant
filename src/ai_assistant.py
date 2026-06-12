@@ -30,8 +30,10 @@ Provide a clear business-focused answer.
     "gemini-2.5-flash"
     )
 
-    response = model.generate_content(
-        prompt
-    )
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return(f"AI responsr generation failed: {e}")
 
-    return response.text
+

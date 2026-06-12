@@ -46,11 +46,21 @@ uploaded_file = st.file_uploader(
 #Run analysis only after a file is uploaded
 if uploaded_file:
 
+
     #Load CSV into DataFrame
     df = load_data(uploaded_file)
 
-    st.subheader("Dataset Preview")
-    st.dataframe(df)
+    with st.expander(
+        "Dataset Preview"
+    ):
+        st.dataframe(df)
+
+    if df.empty:
+        st.error("The uploaded CSV file is empty.")
+        st.stop()
+
+    st.success("Dataset uploaded successfully!")
+
 
     #Displays dataset dimensions
     rows, cols = get_shape(df)
@@ -58,6 +68,13 @@ if uploaded_file:
     st.subheader("Dataset Shape")
     st.write(f"Rows: {rows}")
     st.write(f"Columns: {cols}")
+
+
+    st.sidebar.title("AI Data Analyst Assistant")
+
+    page = st.sidebar.radio("Navigate",["Overview", "Visualization", "AI Features"])
+    st.sidebar.write(f"Rows: {rows}")
+    st.sidebar.write(f"Columns: {cols}")
 
     # Show descriptive statistics
     st.subheader("Dataset Statistics")
@@ -75,6 +92,12 @@ if uploaded_file:
     total_missing = missing_values.sum()
     st.write(f"Total Missing Values: {total_missing}")
 
+
+    st.sidebar.title("AI Data Analyst Assistant")
+
+    page = st.sidebar.radio("Navigate",["Overview", "Visualization", "AI Features"])
+    st.sidebar.write(f"Rows: {rows}")
+    st.sidebar.write(f"Columns: {cols}")
 
 
     # Data Cleaning by removing missing values
@@ -132,6 +155,14 @@ if uploaded_file:
 
 
     # Histogram visualization
+
+    numeric_columns=df.select_dtypes(
+        include=['int64', 'float64']
+    ).columns
+
+    if len(numeric_columns) == 0:
+        st.warning("No numeric columns found for analysis.")
+        st.stop()
     st.subheader("Histogram")
     fig = create_histogram(
         df,
@@ -174,10 +205,21 @@ if uploaded_file:
     )
 
     if st.button("Generate AI Response"):
-        with st.spinner("Anlayzing dataset..."):
+        if not ai_question.strip():
+
+            st.warning(
+            "Please enter a question."
+        )
+
+    else:
+
+        with st.spinner("Analyzing dataset..."):
+
             response = ask_gemini(
-                df, ai_question
+                df,
+                ai_question
             )
+
         st.success(response)
 
         report = generate_report(
@@ -199,3 +241,6 @@ if uploaded_file:
 
         for recommendation in recommendations:
             st.info(recommendation)
+
+        st.markdown("---")
+        st.caption("Build using Python, Streamlit, Pandas, and Gemini API")
